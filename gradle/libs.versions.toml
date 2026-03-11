@@ -10,6 +10,7 @@ json = "20251224"
 androidx-collection = "1.5.0"
 desugar = "2.1.5"
 jsoup = "1.22.1"
+re2j = "1.8"
 quickjs = "1.1.0"
 korte = "4.0.10"
 simplexml = "2.7.1"
@@ -34,6 +35,7 @@ json = { module = "org.json:json", version.ref = "json" }
 androidx-collection = { module = "androidx.collection:collection", version.ref = "androidx-collection" }
 desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+re2j = { module = "com.google.re2j:re2j", version.ref = "re2j" }
 quickjs = { module = "io.webfolder:quickjs", version.ref = "quickjs" }
 korte = { module = "com.soywiz.korlibs.korte:korte-jvm", version.ref = "korte" }
 simplexml = { module = "org.simpleframework:simple-xml", version.ref = "simplexml" }

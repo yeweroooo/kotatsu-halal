@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.json)
     implementation(libs.androidx.collection)
     api(libs.jsoup)
+    implementation(libs.re2j)
 
     ksp(project(":kotatsu-parsers-ksp"))
 
