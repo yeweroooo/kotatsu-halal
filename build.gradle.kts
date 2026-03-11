@@ -15,10 +15,6 @@ val releaseVersion = providers.gradleProperty("releaseVersion")
 group = "org.koitharu"
 version = releaseVersion.get()
 
-java {
-    withSourcesJar()
-}
-
 tasks.test {
     useJUnitPlatform()
 }
