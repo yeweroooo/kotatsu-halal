@@ -3,7 +3,26 @@
 This library provides a collection of manga parsers for convenient access manga available on the web. It can be used in
 JVM and Android applications. It's a fork of [kotatsu-parsers](https://github.com/KotatsuApp/kotatsu-parsers) from [KotatsuApp](https://github.com/KotatsuApp) organization.
 
-![Sources count](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FYakaTeam%2Fkotatsu-parsers%2Frefs%2Fheads%2Fmaster%2F.github%2Fsummary.yaml&query=total&label=manga%20sources&color=%23E9321C) [![](https://jitpack.io/v/YakaTeam/kotatsu-parsers.svg)](https://jitpack.io/#YakaTeam/kotatsu-parsers) ![License](https://img.shields.io/github/license/YakaTeam/kotatsu-parsers)
+![Selected sources](https://img.shields.io/badge/sources-9%20selected-E9321C) ![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)
+
+## This fork
+
+This fork intentionally keeps only these sources:
+
+- AinzScans
+- Apkomik
+- Ikiru
+- Kiryuu
+- KomikCast
+- MangaDex
+- Shinigami
+- SoulScans
+- WestManga
+
+Maintenance is automated through GitHub Actions:
+
+- Run `.github/workflows/sync-upstream.yml` to merge the latest changes from `YakaTeam/kotatsu-parsers` and prune everything outside the list above.
+- Push a tag such as `v1.0.0` to trigger `.github/workflows/release.yml` and publish a GitHub release built by Actions.
 
 ## Usage
 

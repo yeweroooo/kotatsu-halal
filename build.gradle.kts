@@ -7,8 +7,17 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+val releaseVersion = providers.gradleProperty("releaseVersion")
+    .orElse(providers.environmentVariable("RELEASE_VERSION"))
+    .orElse("1.0.0-local")
+    .map { it.removePrefix("refs/tags/").removePrefix("v") }
+
 group = "org.koitharu"
-version = "1.0"
+version = releaseVersion.get()
+
+java {
+    withSourcesJar()
+}
 
 tasks.test {
     useJUnitPlatform()
