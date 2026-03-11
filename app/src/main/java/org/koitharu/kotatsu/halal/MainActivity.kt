@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.widget.ScrollView
 import android.widget.TextView
+import org.koitharu.kotatsu.halal.BuildConfig
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 
 class MainActivity : Activity() {

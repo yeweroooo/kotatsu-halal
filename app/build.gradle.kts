@@ -25,6 +25,10 @@ android {
         versionName = releaseVersion.get()
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
