@@ -22,7 +22,7 @@ This fork intentionally keeps only these sources:
 Maintenance is automated through GitHub Actions:
 
 - Run `.github/workflows/sync-upstream.yml` to merge the latest changes from `YakaTeam/kotatsu-parsers` and prune everything outside the list above.
-- Push a tag such as `v1.0.0` to trigger `.github/workflows/release.yml` and publish a GitHub release built by Actions.
+- Push a tag such as `nightly-20260311` to trigger `.github/workflows/release.yml` and publish a GitHub APK release built by Actions.
 
 ## Usage
 

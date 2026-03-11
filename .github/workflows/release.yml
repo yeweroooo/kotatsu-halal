@@ -1,8 +1,9 @@
-name: Build release
+name: Build APK release
 
 on:
     push:
         tags:
+            - 'nightly-*'
             - 'v*'
 
 permissions:
@@ -22,19 +23,30 @@ jobs:
             -   name: Set up Java environment
                 uses: actions/setup-java@fe779bf55ef683c9413269276a7588bb9cedf07a # v5.2.0
                 with:
-                    java-version: '11'
+                    java-version: '17'
                     distribution: 'temurin'
+
+            -   name: Set up Android SDK
+                uses: android-actions/setup-android@v3
+
+            -   name: Install Android SDK packages
+                shell: bash
+                run: |
+                    yes | sdkmanager --licenses > /dev/null
+                    sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
             -   name: Set up Gradle environment
                 uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
-                with:
-                    gradle-version: '9.3.1'
 
-            -   name: Build release artifacts
+            -   name: Build release APK
                 shell: bash
                 run: |
                     set -o pipefail
-                    ./gradlew clean assemble --stacktrace 2>&1 | tee gradle-build.log
+                    ./gradlew :app:assembleRelease -PreleaseVersion="${GITHUB_REF_NAME}" --stacktrace 2>&1 | tee gradle-build.log
+                    mkdir -p release
+                    apk_path="$(find app/build/outputs/apk/release -maxdepth 1 -name '*-release.apk' | head -n 1)"
+                    test -n "$apk_path"
+                    cp "$apk_path" "release/kotatsu-halal-${GITHUB_REF_NAME}.apk"
 
             -   name: Summarize Gradle failure
                 if: failure()
@@ -65,8 +77,8 @@ jobs:
                 if: success()
                 uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
                 with:
-                    name: kotatsu-parsers-${{ github.ref_name }}
-                    path: build/libs/*.jar
+                    name: kotatsu-halal-${{ github.ref_name }}
+                    path: release/*.apk
 
             -   name: Upload Gradle log
                 if: always()
@@ -78,9 +90,21 @@ jobs:
             -   name: Publish GitHub release
                 env:
                     GH_TOKEN: ${{ github.token }}
+                shell: bash
                 run: |
-                    if gh release view "${{ github.ref_name }}" > /dev/null 2>&1; then
-                        gh release upload "${{ github.ref_name }}" build/libs/*.jar --clobber
+                    title="Kotatsu Halal ${GITHUB_REF_NAME}"
+                    notes="Automated APK build for ${GITHUB_REF_NAME} from ${GITHUB_SHA}."
+                    prerelease_flag=""
+
+                    if [[ "${GITHUB_REF_NAME}" == nightly-* ]]; then
+                        title="Nightly APK ${GITHUB_REF_NAME#nightly-}"
+                        notes="Automated nightly APK build from ${GITHUB_SHA}."
+                        prerelease_flag="--prerelease"
+                    fi
+
+                    if gh release view "${GITHUB_REF_NAME}" > /dev/null 2>&1; then
+                        gh release upload "${GITHUB_REF_NAME}" release/*.apk --clobber
+                        gh release edit "${GITHUB_REF_NAME}" --title "${title}" --notes "${notes}"
                     else
-                        gh release create "${{ github.ref_name }}" build/libs/*.jar --generate-notes --verify-tag
+                        gh release create "${GITHUB_REF_NAME}" release/*.apk --title "${title}" --notes "${notes}" ${prerelease_flag}
                     fi

@@ -22,13 +22,20 @@ jobs:
             -   name: Set up Java environment
                 uses: actions/setup-java@fe779bf55ef683c9413269276a7588bb9cedf07a # v5.2.0
                 with:
-                    java-version: '11'
+                    java-version: '17'
                     distribution: 'temurin'
+
+            -   name: Set up Android SDK
+                uses: android-actions/setup-android@v3
+
+            -   name: Install Android SDK packages
+                shell: bash
+                run: |
+                    yes | sdkmanager --licenses > /dev/null
+                    sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
             -   name: Set up Gradle environment
                 uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
-                with:
-                    gradle-version: '9.3.1'
 
             -   name: Configure git
                 run: |
@@ -49,8 +56,8 @@ jobs:
                 shell: pwsh
                 run: ./scripts/prune-selected-parsers.ps1
 
-            -   name: Refresh generated source summary
-                run: ./gradlew kspKotlin --rerun-tasks
+            -   name: Refresh generated source summary and app build
+                run: ./gradlew kspKotlin :app:assembleDebug --rerun-tasks
 
             -   name: Commit and push changes
                 run: |

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kotatsu Halal</string>
+    <string name="repo_url">https://github.com/yeweroooo/kotatsu-halal</string>
+    <string name="upstream_url">https://github.com/YakaTeam/kotatsu-parsers</string>
+</resources>

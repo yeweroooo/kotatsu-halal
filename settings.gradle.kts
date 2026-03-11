@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kotatsu-parsers"
+include("app")
 include("kotatsu-parsers-ksp")
