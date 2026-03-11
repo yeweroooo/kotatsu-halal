@@ -32,7 +32,9 @@ jobs:
             -   name: Install Android SDK packages
                 shell: bash
                 run: |
-                    yes | sdkmanager --licenses > /dev/null
+                    set +o pipefail
+                    yes 2> /dev/null | sdkmanager --licenses > /dev/null
+                    set -o pipefail
                     sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
             -   name: Set up Gradle environment
@@ -52,26 +54,23 @@ jobs:
                 if: failure()
                 shell: bash
                 run: |
-                    python - <<'PY'
-                    from pathlib import Path
+                    if [[ ! -f gradle-build.log ]]; then
+                        echo "::error::gradle-build.log was not created"
+                        exit 0
+                    fi
 
-                    log_path = Path("gradle-build.log")
-                    lines = log_path.read_text(errors="ignore").splitlines() if log_path.exists() else []
-                    interesting = [
-                        line for line in lines
-                        if (
-                            "FAILURE:" in line
-                            or "What went wrong:" in line
-                            or "Execution failed for task" in line
-                            or "Caused by:" in line
-                            or line.lstrip().startswith("e:")
-                        )
-                    ]
-                    snippet = interesting[-20:] or lines[-80:]
-                    for line in snippet:
-                        escaped = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
-                        print(f"::error::{escaped}")
-                    PY
+                    matches="$(grep -E 'FAILURE:|What went wrong:|Execution failed for task|Caused by:|^[[:space:]]*e:' gradle-build.log | tail -n 20 || true)"
+
+                    if [[ -z "${matches}" ]]; then
+                        matches="$(tail -n 80 gradle-build.log || true)"
+                    fi
+
+                    while IFS= read -r line; do
+                        escaped="${line//%/%25}"
+                        escaped="${escaped//$'\r'/%0D}"
+                        escaped="${escaped//$'\n'/%0A}"
+                        echo "::error::${escaped}"
+                    done <<< "${matches}"
 
             -   name: Upload workflow artifacts
                 if: success()

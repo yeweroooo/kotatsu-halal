@@ -24,7 +24,9 @@ jobs:
             -   name: Install Android SDK packages
                 shell: bash
                 run: |
-                    yes | sdkmanager --licenses > /dev/null
+                    set +o pipefail
+                    yes 2> /dev/null | sdkmanager --licenses > /dev/null
+                    set -o pipefail
                     sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
             -   name: Set up Gradle environment
